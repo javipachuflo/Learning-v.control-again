@@ -9,13 +9,21 @@ public class PlayerController1 : MonoBehaviour
     Rigidbody rb;
     [SerializeField] float jumpPower = 5f;
     [SerializeField] float maxSpeed = 10f;
-    [SerializeField] float acceleration = 20f;
-    [SerializeField] float deceleration = 10f;
+    [SerializeField] float acceleration = 100f; // ADJUST THESE TWO ACCORDING TO "gravityScale". Original values: a 50/d 35. gravityScale 1.
+    [SerializeField] float deceleration = 75f;
     [SerializeField] float fallMultiplier = 2.5f;
+    [SerializeField] float gravityScale = 2f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 customGravity = Physics.gravity * gravityScale;
+        rb.AddForce(customGravity, ForceMode.Acceleration);
     }
 
     void Update()
@@ -59,7 +67,6 @@ public class PlayerController1 : MonoBehaviour
 
         if (inputValue.isPressed) { 
             Debug.Log("Jumped");
-
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z); // normal jump
         }
     }
