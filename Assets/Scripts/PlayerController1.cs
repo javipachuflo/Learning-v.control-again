@@ -11,6 +11,7 @@ public class PlayerController1 : MonoBehaviour
     [SerializeField] float maxSpeed = 10f;
     [SerializeField] float acceleration = 20f;
     [SerializeField] float deceleration = 10f;
+    [SerializeField] float fallMultiplier = 2.5f;
 
     void Start()
     {
@@ -44,15 +45,23 @@ public class PlayerController1 : MonoBehaviour
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
-        Debug.Log(moveInput);
+
+        // jump stuff
+        if (rb.linearVelocity.y < 0 /*i.e. you are falling*/)
+        {
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime; // increased-gravity fall
+        }
+
+        //Debug.Log(moveInput); // shows in the console the input (yes, it's normalised)
     }
 
     void OnJump(InputValue inputValue) {
 
         if (inputValue.isPressed) { 
             Debug.Log("Jumped");
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z); // normal jump
         }
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z);
     }
 
     void OnMove(InputValue inputValue) {
